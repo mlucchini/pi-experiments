@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := copy
 
 .user    := pi
-.machine := pi3.local
+.machine := pi2.local
 .env     := /home/pi/.virtualenvs/cv/bin/activate
 .dir     := scripts
 
@@ -16,7 +16,7 @@ help:
 	@echo ""
 
 copy:
-	rsync ./* pi@pi3.local:~/scripts
+	rsync ./* $(.user)@$(.machine):~/scripts
 
 install: copy
 	ssh $(.user)@$(.machine) " \

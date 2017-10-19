@@ -1,4 +1,5 @@
 Adafruit-CharLCD==1.1.1
 Adafruit-GPIO==1.0.3
+Adafruit-MotorHAT==1.4.0
 Adafruit-PureIO==0.2.1
 RPi.GPIO==0.6.3
