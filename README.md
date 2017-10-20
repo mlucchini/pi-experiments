@@ -21,6 +21,17 @@ For Nema-17 12V 350mA: red-grey-_blank_-yellow-green
 make exec PROGRAM=motor
 ```
 
+
+##### Servo motor
+
+May be a good idea to use a PWM controller to avoid jitter.
+Meanwhile, connect _white_ to GPIO pin #18 and power/ground.
+
+```sh
+make exec PROGRAM=servo
+```
+
+
 ### Random
 
 
