@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := copy
 
 .user    := pi
-.machine := pi2.local
+.machine := pi3.local
 .env     := /home/pi/.virtualenvs/cv/bin/activate
 .dir     := scripts
 

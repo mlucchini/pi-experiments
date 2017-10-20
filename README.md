@@ -15,6 +15,9 @@ make exec PROGRAM=lcd
 
 ##### Stepper motor
 
+Enable I2C with `sudo raspi-config` and increase the I2C baudrate `dtparam=i2c_baudrate=1000000` in `/boot/config.txt`.
+I also tried to add `options i2c_bcm2708 baudrate=400000` to `/etc/modprobe.d/i2c.conf`:
+
 For Nema-17 12V 350mA: red-grey-_blank_-yellow-green
 
 ```sh
