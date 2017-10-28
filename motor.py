@@ -14,7 +14,7 @@ def turn_off_motors():
 
 
 def stepper_worker(stepper, direction):
-    for _ in range(1000):
+    for _ in range(200):
         stepper.oneStep(direction, Adafruit_MotorHAT.DOUBLE)
 
 
@@ -27,3 +27,6 @@ st1.start()
 
 st2 = threading.Thread(target=stepper_worker, args=(myStepper2, Adafruit_MotorHAT.BACKWARD,))
 st2.start()
+
+st1.join()
+st2.join()

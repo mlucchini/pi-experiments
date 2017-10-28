@@ -108,3 +108,4 @@ venv.bak/
 
 .idea
 *.iml
+.DS_Store
