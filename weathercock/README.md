@@ -36,4 +36,6 @@ python face_encoder.py /tmp/images encodings
 
 ```sh
 python main.py encodings
+# or
+python main.py encodings --simulation
 ```
