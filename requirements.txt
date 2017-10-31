@@ -1,7 +1,11 @@
+utils
 Adafruit-CharLCD==1.1.1
 Adafruit-GPIO==1.0.3
 Adafruit-MotorHAT==1.4.0
 Adafruit-PureIO==0.2.1
+face-recognition==0.2.2
 numpy==1.13.3
+opencv-python==3.3.0.9
 picamera==1.13
+requests==2.18.4
 RPi.GPIO==0.6.3

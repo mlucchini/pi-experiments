@@ -21,13 +21,17 @@ I also tried to add `options i2c_bcm2708 baudrate=1000000` to `/etc/modprobe.d/i
 For Nema-17 12V 350mA: red-grey-_blank_-yellow-green
 
 ```sh
+# Simple demonstration program
 make exec PROGRAM=motor
+
+# Manual keyboard controller
+make exec PROGRAM=motor_remote_controller
 ```
 
 
 ##### Servo motor
 
-May be a good idea to use a PWM controller to avoid jitter.
+May be a good idea to use a PWM controller to avoid jitter?
 Meanwhile, connect _white_ to GPIO pin #18 and power/ground.
 
 ```sh

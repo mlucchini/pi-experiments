@@ -12,6 +12,7 @@ __pycache__/
 
 # Distribution / packaging
 .Python
+env/
 build/
 develop-eggs/
 dist/
@@ -106,6 +107,7 @@ venv.bak/
 
 # End of https://www.gitignore.io/api/python
 
+.vscode/
 .idea
 *.iml
 .DS_Store

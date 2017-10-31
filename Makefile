@@ -16,7 +16,7 @@ help:
 	@echo ""
 
 copy:
-	rsync ./* $(.user)@$(.machine):~/scripts
+	rsync -r ./* $(.user)@$(.machine):~/scripts
 
 install: copy
 	ssh $(.user)@$(.machine) " \
