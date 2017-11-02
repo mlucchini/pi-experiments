@@ -4,46 +4,45 @@ import numpy as np
 import os
 import sys
 
-
-RESIZE_FACTOR = 2
+from utils.camera import Camera
 
 
 class VideoFaceRecognizer:
-    def __init__(self, src_dir):
+    def __init__(self, src_dir, frame_rate, resolution):
         self.src_dir = src_dir
+        self.frame_rate = frame_rate
+        self.resolution = resolution
         self.face_encodings = []
         self.users = []
         self.face_recognized_handlers = []
+        self.camera = Camera(frame_rate, resolution)
 
     def load(self):
         self.__load_encodings()
-    
+
     def add_face_recognized_handler(self, handler):
         self.face_recognized_handlers.append(handler)
 
     def start_capture(self):
-        video_capture = cv2.VideoCapture(0)
         process_this_frame = True
         frame_face_locations = []
         frame_face_users = []
 
-        while True:
-            ret, frame = video_capture.read()
-            small_frame = cv2.resize(frame, (0, 0), fx=(1.0/RESIZE_FACTOR), fy=(1.0/RESIZE_FACTOR))
+        for frame in self.camera.iterator():
             if process_this_frame:
-                frame_face_locations, frame_face_users = self.__extract_faces(small_frame)
+                frame_face_locations, frame_face_users = self.__extract_faces(frame)
                 closest_face_index = self.__find_closest_face_index(frame_face_locations, frame_face_users)
                 if closest_face_index is not None:
                     self.__process_handlers(frame_face_users[closest_face_index],
                                             frame_face_locations[closest_face_index],
-                                            small_frame)
+                                            frame)
             self.__draw_rectangles(frame, frame_face_locations, frame_face_users, closest_face_index)
             process_this_frame = not process_this_frame
             cv2.imshow('Video', frame)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
 
-        video_capture.release()
+        self.camera.release()
         cv2.destroyAllWindows()
 
     def __load_encodings(self):
@@ -82,12 +81,6 @@ class VideoFaceRecognizer:
     def __draw_rectangles(frame, frame_face_locations, frame_face_users, closest_face_index):
         for i, ((top, right, bottom, left), user) in enumerate(zip(frame_face_locations, frame_face_users)):
             rect_colour = (255, 0, 0) if i == closest_face_index else (0, 0, 255)
-
-            top *= RESIZE_FACTOR
-            right *= RESIZE_FACTOR
-            bottom *= RESIZE_FACTOR
-            left *= RESIZE_FACTOR
-
             center = (int(left + (right - left) / 2), int(bottom + (top - bottom) / 2))
 
             cv2.rectangle(frame, (left, top), (right, bottom), rect_colour, 2)
@@ -95,7 +88,7 @@ class VideoFaceRecognizer:
             font = cv2.FONT_HERSHEY_DUPLEX
             cv2.putText(frame, user['name'], (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
             cv2.putText(frame, 'x', center, font, 1.0, (255, 255, 255), 1)
-    
+
     def __process_handlers(self, user, location, frame):
         for handler in self.face_recognized_handlers:
             handler.handle(user, location, frame)

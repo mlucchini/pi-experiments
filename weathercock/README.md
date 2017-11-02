@@ -12,7 +12,7 @@ echo "/usr/local/lib/python3.6/site-packages/" > /Library/Python/3.6/site-packag
 ```
 
 
-##### Install app dependencies
+##### Install app dependencies on MacOSX
 
 ```sh
 brew install cmake --with-python3
@@ -21,9 +21,19 @@ brew install boost-python --with-python3
 pip install virtualenv virtualenvwrapper
 mkvirtualenv cv -p python3
 workon cv
-pip install -r requirements.txt
+pip install -r ../requirements.txt
 ```
 
+
+##### Install app dependencies on Pi
+
+- [OpenCV](https://www.pyimagesearch.com/2017/09/04/raspbian-stretch-install-opencv-3-python-on-your-raspberry-pi/)
+- [Face Recognition library](https://gist.github.com/ageitgey/1ac8dbe8572f3f533df6269dab35df65)
+
+```sh
+workon cv
+pip install -r ../requirements.txt
+```
 
 ##### Encode portraits
 

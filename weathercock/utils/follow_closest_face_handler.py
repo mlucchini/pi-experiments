@@ -6,10 +6,10 @@ from utils.geometry_helper import get_angle
 
 
 class FollowClosestFaceHandler:
-    def __init__(self, camera_fov, simulate=False):
+    def __init__(self, camera_fov, simulation=False):
         self.camera_fov = camera_fov
-        self.h_stepper_motor_driver = SimulatedStepperMotorDriver(1) if simulate else StepperMotorDriver(1)
-        self.v_stepper_motor_driver = SimulatedStepperMotorDriver(2) if simulate else StepperMotorDriver(2)
+        self.h_stepper_motor_driver = SimulatedStepperMotorDriver(1) if simulation else StepperMotorDriver(1)
+        self.v_stepper_motor_driver = SimulatedStepperMotorDriver(2) if simulation else StepperMotorDriver(2)
 
     def handle(self, user, location, frame):
         angle = get_angle(location, frame, self.camera_fov)

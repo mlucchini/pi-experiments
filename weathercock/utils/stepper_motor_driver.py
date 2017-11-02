@@ -17,15 +17,6 @@ class Worker(threading.Thread):
         with self.lock:
             self.target_steps = target_steps
 
-    def __one_step(self):
-        if self.current_steps < self.target_steps:
-            direction = Adafruit_MotorHAT.FORWARD
-            self.current_steps += 1
-        else:
-            direction = Adafruit_MotorHAT.BACKWARD
-            self.current_steps -= 1
-        self.stepper.oneStep(direction, Adafruit_MotorHAT.DOUBLE)
-
     def run(self):
         while True:
             self.lock.acquire()
@@ -40,6 +31,15 @@ class Worker(threading.Thread):
             except RuntimeError:
                 self.lock.release()
 
+    def __one_step(self):
+        if self.current_steps < self.target_steps:
+            direction = Adafruit_MotorHAT.FORWARD
+            self.current_steps += 1
+        else:
+            direction = Adafruit_MotorHAT.BACKWARD
+            self.current_steps -= 1
+        self.stepper.oneStep(direction, Adafruit_MotorHAT.DOUBLE)
+
 
 class StepperMotorDriver:
     def __init__(self, motor_index, motor_steps_per_revolution=200):
@@ -53,13 +53,13 @@ class StepperMotorDriver:
         self.worker.daemon = True
         self.worker.start()
 
+    def move(self, angle):
+        steps = self.__angle_to_steps(angle)
+        self.worker.update_steps(steps)
+        self.update_steps_event.set()
+
     def __turn_off_motor(self):
         self.mh.getMotor(self.motor_index).run(Adafruit_MotorHAT.RELEASE)
 
     def __angle_to_steps(self, angle):
         return int(angle * self.motor_steps_per_revolution / 360.0)
-
-    def move(self, angle):
-        steps = self.__angle_to_steps(angle)
-        self.worker.update_steps(steps)
-        self.update_steps_event.set()

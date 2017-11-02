@@ -17,6 +17,10 @@ class FireClosestFaceHandler:
         self.servo_pin = GPIO.PWM(SERVO_PIN_NUMBER, SERVO_PWM_FREQUENCY)
         self.servo_pin.start()
 
+    def handle(self, user, location, frame):
+        if is_target_locked(location, frame, self.camera_fov):
+            self.__fire()
+
     def __rotate(self, angle):
         duty_cycle = float(angle) / 18.0 + 2
         GPIO.output(SERVO_PIN_NUMBER, True)
@@ -31,7 +35,3 @@ class FireClosestFaceHandler:
         except KeyboardInterrupt:
             self.servo_pin.stop()
             GPIO.cleanup()
-
-    def handle(self, user, location, frame):
-        if is_target_locked(location, frame, self.camera_fov):
-            self.__fire()
