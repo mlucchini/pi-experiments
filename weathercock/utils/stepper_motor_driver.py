@@ -1,4 +1,3 @@
-import atexit
 import threading
 
 from Adafruit_MotorHAT import Adafruit_MotorHAT, Adafruit_DCMotor, Adafruit_StepperMotor
@@ -42,11 +41,10 @@ class Worker(threading.Thread):
 
 
 class StepperMotorDriver:
-    def __init__(self, motor_index, motor_steps_per_revolution=200):
+    def __init__(self, motor_hat, motor_index, motor_steps_per_revolution=200):
+        self.mh = motor_hat
         self.motor_index = motor_index
         self.motor_steps_per_revolution = motor_steps_per_revolution
-        self.mh = Adafruit_MotorHAT()
-        atexit.register(self.__turn_off_motor)
         self.stepper = self.mh.getStepper(motor_steps_per_revolution, motor_index)
         self.update_steps_event = threading.Event()
         self.worker = Worker(self.stepper, self.update_steps_event)
@@ -57,9 +55,6 @@ class StepperMotorDriver:
         steps = self.__angle_to_steps(angle)
         self.worker.update_steps(steps)
         self.update_steps_event.set()
-
-    def __turn_off_motor(self):
-        self.mh.getMotor(self.motor_index).run(Adafruit_MotorHAT.RELEASE)
 
     def __angle_to_steps(self, angle):
         return int(angle * self.motor_steps_per_revolution / 360.0)

@@ -1,4 +1,5 @@
 import cv2
+import time
 
 from utils.system import is_pi
 
@@ -39,13 +40,14 @@ class PiCamera:
         self.camera = PiCamera()
         self.camera.resolution = resolution
         self.camera.framerate = frame_rate
-        self.rawCapture = PiRGBArray(self.camera, size=resolution)
+        self.rawCapture = PiRGBArray(self.camera, size=self.camera.resolution)
+        time.sleep(0.2)  # Warm up camera
 
     def iterator(self):
         for frame in self.camera.capture_continuous(self.rawCapture, format="bgr", use_video_port=True):
-            frame = frame.array
+            frame.array.setflags(write=1)
+            yield frame.array
             self.rawCapture.truncate(0)
-            yield frame
 
     def release(self):
         self.camera.release()

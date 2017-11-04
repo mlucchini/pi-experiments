@@ -11,7 +11,7 @@ def get_angle(location, frame, camera_fov):
     frame_center = (width / 2.0, height / 2.0)
     face_center = (left + (right - left) / 2.0, bottom + (top - bottom) / 2.0)
 
-    pixels_offset = tuple(np.subtract(frame_center, face_center))
+    pixels_offset = tuple(np.subtract(face_center, frame_center))
     percentage_offset = (pixels_offset[0] / width, pixels_offset[1] / height)
     angle_offset = tuple(np.multiply(percentage_offset, camera_fov))
 

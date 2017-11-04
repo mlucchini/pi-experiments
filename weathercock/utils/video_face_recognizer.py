@@ -1,3 +1,5 @@
+from enum import Enum
+
 import face_recognition
 import cv2
 import numpy as np
@@ -7,11 +9,19 @@ import sys
 from utils.camera import Camera
 
 
+class Recognizer(Enum):
+    RECOGNITION = 0
+    DETECTION = 1
+
+
 class VideoFaceRecognizer:
-    def __init__(self, src_dir, frame_rate, resolution):
+    def __init__(self, src_dir, frame_rate, resolution, recognizer=Recognizer.RECOGNITION, headless=False):
         self.src_dir = src_dir
         self.frame_rate = frame_rate
         self.resolution = resolution
+        self.recognizer = recognizer
+        self.headless = headless
+        self.cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
         self.face_encodings = []
         self.users = []
         self.face_recognized_handlers = []
@@ -38,7 +48,8 @@ class VideoFaceRecognizer:
                                             frame)
             self.__draw_rectangles(frame, frame_face_locations, frame_face_users, closest_face_index)
             process_this_frame = not process_this_frame
-            cv2.imshow('Video', frame)
+            if not self.headless:
+                cv2.imshow('Video', frame)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
 
@@ -55,16 +66,22 @@ class VideoFaceRecognizer:
                 self.users.append({'id': path.split('-')[0], 'name': path.split('-')[1].split('.')[0]})
         print('Loaded %d face encodings' % len(self.users))
 
-    def __extract_faces(self, small_frame):
-        frame_face_locations = face_recognition.face_locations(small_frame)
-        frame_face_encodings = face_recognition.face_encodings(small_frame, frame_face_locations)
-        frame_face_users = []
-        for face_encoding in frame_face_encodings:
-            distances = face_recognition.face_distance(self.face_encodings, face_encoding)
-            if distances.any():
-                closest_index = (np.abs(distances)).argmin()
-                frame_face_users.append(self.users[closest_index])
-        return frame_face_locations, frame_face_users
+    def __extract_faces(self, frame):
+        if self.recognizer is Recognizer.DETECTION:
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            faces = self.cascade.detectMultiScale(gray, 1.3, 5)
+            locations = [(y, x + w, y + h, x) for (x, y, w, h) in faces]
+            return locations, [{'id': '0', 'name': 'Unknown'} for _ in locations]
+        else:
+            frame_face_locations = face_recognition.face_locations(frame)
+            frame_face_encodings = face_recognition.face_encodings(frame, frame_face_locations)
+            frame_face_users = []
+            for face_encoding in frame_face_encodings:
+                distances = face_recognition.face_distance(self.face_encodings, face_encoding)
+                if distances.any():
+                    closest_index = (np.abs(distances)).argmin()
+                    frame_face_users.append(self.users[closest_index])
+            return frame_face_locations, frame_face_users
 
     @staticmethod
     def __find_closest_face_index(frame_face_locations, frame_face_users):

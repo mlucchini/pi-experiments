@@ -45,7 +45,6 @@ python face_encoder.py /tmp/images encodings
 ##### Run
 
 ```sh
-python main.py encodings
-# or
-python main.py encodings --simulation
+python main.py # display all the command line options
+python main.py --src_dir encodings --simulation --recognizer detection --headless
 ```

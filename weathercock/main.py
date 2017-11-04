@@ -1,23 +1,33 @@
-import sys
+import argparse
+
 from utils.log_user_on_face_recognized_handler import LogUserOnFaceRecognizedHandler
 from utils.follow_closest_face_handler import FollowClosestFaceHandler
-from utils.video_face_recognizer import VideoFaceRecognizer
+from utils.video_face_recognizer import VideoFaceRecognizer, Recognizer
 
+#  CAMERA_FOV = (53.50, 41.41)  # https://thepihut.com/products/zerocam-camera-for-raspberry-pi-zero#desc
+CAMERA_FOV = (120, 100)  # https://thepihut.com/products/zerocam-camera-for-raspberry-pi-zero#desc
 
-CAMERA_FOV = (53.50, 41.41)  # https://thepihut.com/products/zerocam-camera-for-raspberry-pi-zero#desc
 FRAME_RATE = 15
-RESOLUTION = (1280, 720)
+RESOLUTION = (640, 480)
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description='Launches face detection or recognition and shoots detected targets.')
+    parser.add_argument('--src_dir', required=True, help='the directory containing the face encodings')
+    parser.add_argument('--simulation', action='store_true', help='simulates motors and triggers')
+    parser.add_argument('--headless', action='store_true', help='do not display camera capture on screen')
+    parser.add_argument('--recognizer', default='recognition', choices=['recognition', 'detection'], help='algorithm')
+    return vars(parser.parse_args())
 
 
 if __name__ == '__main__':
-    if len(sys.argv) < 2:
-        print('Usage: %s src_dir [--simulation]' % sys.argv[0])
-        sys.exit()
+    args = parse_args()
+    src_dir = args['src_dir']
+    simulation = args['simulation']
+    headless = args['headless']
+    recognizer = Recognizer.DETECTION if args['recognizer'] == 'detection' else 'recognition'
 
-    src_dir = sys.argv[1]
-    simulation = len(sys.argv) > 2 and sys.argv[2] == '--simulation'
-
-    face_recognizer = VideoFaceRecognizer(src_dir, frame_rate=FRAME_RATE, resolution=RESOLUTION)
+    face_recognizer = VideoFaceRecognizer(src_dir, FRAME_RATE, RESOLUTION, recognizer, headless)
     face_recognizer.load()
     face_recognizer.add_face_recognized_handler(LogUserOnFaceRecognizedHandler())
 

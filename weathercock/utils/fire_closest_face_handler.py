@@ -15,7 +15,7 @@ class FireClosestFaceHandler:
         GPIO.setwarnings(False)
         self.camera_fov = camera_fov
         self.servo_pin = GPIO.PWM(SERVO_PIN_NUMBER, SERVO_PWM_FREQUENCY)
-        self.servo_pin.start()
+        self.servo_pin.start(0)
 
     def handle(self, user, location, frame):
         if is_target_locked(location, frame, self.camera_fov):
