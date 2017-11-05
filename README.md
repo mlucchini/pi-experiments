@@ -42,6 +42,12 @@ make exec PROGRAM=servo
 ### Random
 
 
+##### Power supply
+
+
+The Pi may crash and restart unless it's got sufficient power. For the Pi3, 2.4A and 5.1V is good.
+
+
 ##### SD card images
 
 
