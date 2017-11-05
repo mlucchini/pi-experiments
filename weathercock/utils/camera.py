@@ -2,6 +2,7 @@ import cv2
 import time
 
 from utils.system import is_pi
+from utils.threaded_generator import ThreadedGenerator
 
 
 class Camera:
@@ -23,13 +24,16 @@ class CvCamera:
         self.video_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, resolution[1])
 
     def iterator(self):
+        return ThreadedGenerator(self.__iterator_worker())
+
+    def release(self):
+        self.video_capture.release()
+
+    def __iterator_worker(self):
         while True:
             ret, frame = self.video_capture.read()
             if ret:
                 yield frame
-
-    def release(self):
-        self.video_capture.release()
 
 
 class PiCamera:
@@ -41,13 +45,16 @@ class PiCamera:
         self.camera.resolution = resolution
         self.camera.framerate = frame_rate
         self.rawCapture = PiRGBArray(self.camera, size=self.camera.resolution)
-        time.sleep(0.2)  # Warm up camera
+        time.sleep(1.0)  # Warm up camera
 
     def iterator(self):
+        return ThreadedGenerator(self.__iterator_worker())
+
+    def release(self):
+        self.camera.release()
+
+    def __iterator_worker(self):
         for frame in self.camera.capture_continuous(self.rawCapture, format="bgr", use_video_port=True):
             frame.array.setflags(write=1)
             yield frame.array
             self.rawCapture.truncate(0)
-
-    def release(self):
-        self.camera.release()
