@@ -1,7 +1,7 @@
 import numpy as np
 
 
-TARGET_LOCK_THRESHOLD_IN_DEGREES = 1
+TARGET_LOCK_THRESHOLD_IN_DEGREES = 2
 
 
 def get_angle(location, frame, camera_fov):

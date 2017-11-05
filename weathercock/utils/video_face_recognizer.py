@@ -70,10 +70,13 @@ class VideoFaceRecognizer:
         if self.recognizer is Recognizer.DETECTION:
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             faces = self.cascade.detectMultiScale(gray, 1.3, 5)
-            locations = [(y, x + w, y + h, x) for (x, y, w, h) in faces]
+            locations = [(y.item(), x.item() + w.item(), y.item() + h.item(), x.item()) for (x, y, w, h) in faces]
             return locations, [{'id': '0', 'name': 'Unknown'} for _ in locations]
         else:
-            frame_face_locations = face_recognition.face_locations(frame)
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            faces = self.cascade.detectMultiScale(gray, 1.3, 5)
+            frame_face_locations = [(y.item(), x.item() + w.item(), y.item() + h.item(), x.item()) for (x, y, w, h) in faces]
+            #  frame_face_locations = face_recognition.face_locations(frame)
             frame_face_encodings = face_recognition.face_encodings(frame, frame_face_locations)
             frame_face_users = []
             for face_encoding in frame_face_encodings:

@@ -10,9 +10,9 @@ SERVO_PWM_FREQUENCY = 50
 
 class FireClosestFaceHandler:
     def __init__(self, camera_fov):
+        GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BOARD)
         GPIO.setup(SERVO_PIN_NUMBER, GPIO.OUT)
-        GPIO.setwarnings(False)
         self.camera_fov = camera_fov
         self.servo_pin = GPIO.PWM(SERVO_PIN_NUMBER, SERVO_PWM_FREQUENCY)
         self.servo_pin.start(0)

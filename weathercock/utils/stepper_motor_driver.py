@@ -14,7 +14,9 @@ class Worker(threading.Thread):
 
     def update_steps(self, target_steps):
         with self.lock:
+            print('Updating target steps to %d' % target_steps)
             self.target_steps = target_steps
+            self.current_steps = 0
 
     def run(self):
         while True:
