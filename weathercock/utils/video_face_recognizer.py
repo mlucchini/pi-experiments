@@ -21,7 +21,7 @@ class VideoFaceRecognizer:
         self.resolution = resolution
         self.recognizer = recognizer
         self.headless = headless
-        self.cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+        self.classifier = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
         self.face_encodings = []
         self.users = []
         self.face_recognized_handlers = []
@@ -66,17 +66,19 @@ class VideoFaceRecognizer:
                 self.users.append({'id': path.split('-')[0], 'name': path.split('-')[1].split('.')[0]})
         print('Loaded %d face encodings' % len(self.users))
 
+    def __extract_faces_locations(self, frame):
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        faces = self.classifier.detectMultiScale(gray, 1.3, 5)
+        return [(y.item(), x.item() + w.item(), y.item() + h.item(), x.item()) for (x, y, w, h) in faces]
+
     def __extract_faces(self, frame):
         if self.recognizer is Recognizer.DETECTION:
-            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            faces = self.cascade.detectMultiScale(gray, 1.3, 5)
-            locations = [(y.item(), x.item() + w.item(), y.item() + h.item(), x.item()) for (x, y, w, h) in faces]
-            return locations, [{'id': '0', 'name': 'Unknown'} for _ in locations]
+            frame_face_locations = self.__extract_faces_locations(frame)
+            return frame_face_locations, [{'id': '0', 'name': 'Unknown'} for _ in frame_face_locations]
         else:
-            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            faces = self.cascade.detectMultiScale(gray, 1.3, 5)
-            frame_face_locations = [(y.item(), x.item() + w.item(), y.item() + h.item(), x.item()) for (x, y, w, h) in faces]
+            #  Takes way too much time
             #  frame_face_locations = face_recognition.face_locations(frame)
+            frame_face_locations = self.__extract_faces_locations(frame)
             frame_face_encodings = face_recognition.face_encodings(frame, frame_face_locations)
             frame_face_users = []
             for face_encoding in frame_face_encodings:

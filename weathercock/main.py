@@ -5,8 +5,7 @@ from utils.follow_closest_face_handler import FollowClosestFaceHandler
 from utils.video_face_recognizer import VideoFaceRecognizer, Recognizer
 
 #  CAMERA_FOV = (53.50, 41.41)  # https://thepihut.com/products/zerocam-camera-for-raspberry-pi-zero#desc
-CAMERA_FOV = (160, 120)  # https://thepihut.com/products/zerocam-camera-for-raspberry-pi-zero#desc
-
+CAMERA_FOV = (160, 120)         # https://www.amazon.co.uk/Raspberry-Wide-Angle-Fish-Eye-Camera/dp/B00N1YJKFS
 FRAME_RATE = 15
 RESOLUTION = (640, 480)
 
