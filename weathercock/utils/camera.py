@@ -1,16 +1,17 @@
+from threading import Thread
+
 import cv2
 import time
 
 from utils.system import is_pi
-from utils.threaded_generator import ThreadedGenerator
 
 
 class Camera:
     def __init__(self, frame_rate, resolution):
         self.driver = PiCamera(frame_rate, resolution) if is_pi() else CvCamera(frame_rate, resolution)
 
-    def iterator(self):
-        return self.driver.iterator()
+    def read(self):
+        return self.driver.read()
 
     def release(self):
         return self.driver.release()
@@ -22,9 +23,12 @@ class CvCamera:
         self.video_capture.set(cv2.CAP_PROP_FPS, frame_rate)
         self.video_capture.set(cv2.CAP_PROP_FRAME_WIDTH, resolution[0])
         self.video_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, resolution[1])
+        self.frame = None
+        self.thread = Thread(target=self.__iterator_worker, daemon=True)
+        self.thread.start()
 
-    def iterator(self):
-        return ThreadedGenerator(self.__iterator_worker())
+    def read(self):
+        return self.frame
 
     def release(self):
         self.video_capture.release()
@@ -33,7 +37,7 @@ class CvCamera:
         while True:
             ret, frame = self.video_capture.read()
             if ret:
-                yield frame
+                self.frame = frame
 
 
 class PiCamera:
@@ -46,9 +50,12 @@ class PiCamera:
         self.camera.framerate = frame_rate
         self.rawCapture = PiRGBArray(self.camera, size=self.camera.resolution)
         time.sleep(1.0)  # Warm up camera
+        self.frame = None
+        self.thread = Thread(target=self.__iterator_worker, daemon=True)
+        self.thread.start()
 
-    def iterator(self):
-        return ThreadedGenerator(self.__iterator_worker())
+    def read(self):
+        return self.frame
 
     def release(self):
         self.camera.release()
@@ -56,5 +63,5 @@ class PiCamera:
     def __iterator_worker(self):
         for frame in self.camera.capture_continuous(self.rawCapture, format="bgr", use_video_port=True):
             frame.array.setflags(write=1)
-            yield frame.array
+            self.frame = frame.array
             self.rawCapture.truncate(0)

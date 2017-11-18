@@ -13,9 +13,10 @@ RESOLUTION = (640, 480)
 def parse_args():
     parser = argparse.ArgumentParser(description='Launches face detection or recognition and shoots detected targets.')
     parser.add_argument('--src_dir', required=True, help='the directory containing the face encodings')
-    parser.add_argument('--simulation', action='store_true', help='simulates motors and triggers')
+    parser.add_argument('--simulation', action='store_true', help='simulates motors and trigger')
     parser.add_argument('--headless', action='store_true', help='do not display camera capture on screen')
-    parser.add_argument('--recognizer', default='recognition', choices=['recognition', 'detection'], help='algorithm')
+    parser.add_argument('--recognizer', default='recognition', choices=['recognition', 'detection'],
+                        help='whether specific faces are recognised or all faces are detected')
     return vars(parser.parse_args())
 
 

@@ -14,6 +14,11 @@ class Recognizer(Enum):
     DETECTION = 1
 
 
+RED = (255, 0, 0)
+BLUE = (0, 0, 255)
+WHITE = (255, 255, 255)
+
+
 class VideoFaceRecognizer:
     def __init__(self, src_dir, frame_rate, resolution, recognizer=Recognizer.RECOGNITION, headless=False):
         self.src_dir = src_dir
@@ -38,8 +43,9 @@ class VideoFaceRecognizer:
         frame_face_locations = []
         frame_face_users = []
 
-        for frame in self.camera.iterator():
-            if process_this_frame:
+        while True:
+            frame = self.camera.read()
+            if frame is not None and process_this_frame:
                 frame_face_locations, frame_face_users = self.__extract_faces(frame)
                 closest_face_index = self.__find_closest_face_index(frame_face_locations, frame_face_users)
                 if closest_face_index is not None:
@@ -76,7 +82,7 @@ class VideoFaceRecognizer:
             frame_face_locations = self.__extract_faces_locations(frame)
             return frame_face_locations, [{'id': '0', 'name': 'Unknown'} for _ in frame_face_locations]
         else:
-            #  Takes way too much time
+            #  Takes way too much time on the Pi
             #  frame_face_locations = face_recognition.face_locations(frame)
             frame_face_locations = self.__extract_faces_locations(frame)
             frame_face_encodings = face_recognition.face_encodings(frame, frame_face_locations)
@@ -102,25 +108,12 @@ class VideoFaceRecognizer:
     @staticmethod
     def __draw_rectangles(frame, frame_face_locations, frame_face_users, closest_face_index):
         for i, ((top, right, bottom, left), user) in enumerate(zip(frame_face_locations, frame_face_users)):
-            rect_colour = (255, 0, 0) if i == closest_face_index else (0, 0, 255)
-            center = (int(left + (right - left) / 2), int(bottom + (top - bottom) / 2))
+            rect_colour = RED if i == closest_face_index else BLUE
 
             cv2.rectangle(frame, (left, top), (right, bottom), rect_colour, 2)
             cv2.rectangle(frame, (left, bottom - 35), (right, bottom), rect_colour, cv2.FILLED)
-            font = cv2.FONT_HERSHEY_DUPLEX
-            cv2.putText(frame, user['name'], (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
-            cv2.putText(frame, 'x', center, font, 1.0, (255, 255, 255), 1)
+            cv2.putText(frame, user['name'], (left + 6, bottom - 6), cv2.FONT_HERSHEY_DUPLEX, 1.0, WHITE, 1)
 
     def __process_handlers(self, user, location, frame):
         for handler in self.face_recognized_handlers:
             handler.handle(user, location, frame)
-
-
-if __name__ == '__main__':
-    if len(sys.argv) < 2:
-        print('Usage: %s src_dir' % sys.argv[0])
-        sys.exit()
-
-    face_recognizer = VideoFaceRecognizer(sys.argv[1])
-    face_recognizer.load()
-    face_recognizer.start_capture()
