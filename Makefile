@@ -27,7 +27,7 @@ exec:
 	ssh $(.user)@$(.machine) " \
 	source $(.env); \
 	if pgrep -u $(.user) python; then pkill -u $(.user) python; fi; \
-	python $(.dir)/$(PROGRAM).py &"
+	python $(.dir)/programs/$(PROGRAM).py &"
 
 stop:
 	ssh $(.user)@$(.machine) "pkill -u $(.user) python"

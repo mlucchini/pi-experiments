@@ -42,20 +42,22 @@ class VideoFaceRecognizer:
         process_this_frame = True
         frame_face_locations = []
         frame_face_users = []
+        closest_face_index = None
 
         while True:
             frame = self.camera.read()
-            if frame is not None and process_this_frame:
-                frame_face_locations, frame_face_users = self.__extract_faces(frame)
-                closest_face_index = self.__find_closest_face_index(frame_face_locations, frame_face_users)
-                if closest_face_index is not None:
-                    self.__process_handlers(frame_face_users[closest_face_index],
-                                            frame_face_locations[closest_face_index],
-                                            frame)
-            self.__draw_rectangles(frame, frame_face_locations, frame_face_users, closest_face_index)
-            process_this_frame = not process_this_frame
-            if not self.headless:
-                cv2.imshow('Video', frame)
+            if frame is not None:
+                if process_this_frame:
+                    frame_face_locations, frame_face_users = self.__extract_faces(frame)
+                    closest_face_index = self.__find_closest_face_index(frame_face_locations, frame_face_users)
+                    if closest_face_index is not None:
+                        self.__process_handlers(frame_face_users[closest_face_index],
+                                                frame_face_locations[closest_face_index],
+                                                frame)
+                self.__draw_rectangles(frame, frame_face_locations, frame_face_users, closest_face_index)
+                process_this_frame = not process_this_frame
+                if not self.headless:
+                    cv2.imshow('Video', frame)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
 

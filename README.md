@@ -1,5 +1,13 @@
 # Pi experiments
 
+
+### Weathercock
+
+
+Self-defense turret. Uses face detection and recognition to detect intruders and shoot them with a Nerf gun triggered with a servo motor.
+See [this README](weathercock/README.md).
+
+
 ### Programs
 
 
@@ -24,8 +32,8 @@ For Nema-17 12V 350mA: red-grey-_blank_-yellow-green
 # Simple demonstration program
 make exec PROGRAM=motor
 
-# Manual keyboard controller
-make exec PROGRAM=motor_remote_controller
+# Manual keyboard controller - should probably execute from a shell on the Pi though
+make exec PROGRAM=motor_remote_control
 ```
 
 
@@ -36,6 +44,14 @@ Meanwhile, connect _white_ to GPIO pin #18 and power/ground.
 
 ```sh
 make exec PROGRAM=servo
+```
+
+
+##### Blink LED
+
+
+```sh
+make exec PROGRAM=blink
 ```
 
 
@@ -96,7 +112,7 @@ open rectest.wav
 ```
 
 
-# Camera
+##### Camera
 
 
 Take a picture and check it:
