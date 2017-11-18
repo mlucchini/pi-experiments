@@ -4,8 +4,15 @@
 ### Weathercock
 
 
-Self-defense turret. Uses face detection and recognition to detect intruders and shoot them with a Nerf gun triggered with a servo motor.
+Self-defense turret. Uses face detection and recognition to detect intruders and shoot them with a Nerf gun triggered by a servo motor.
 See [this README](weathercock/README.md).
+
+|               |               |
+|:-------------:|:-------------:|
+| ![Nerf gun](pictures/IMG_20171118_132248.jpg "Nerf gun") | ![Fisheye camera](pictures/IMG_20171118_132325.jpg "Fisheye camera") |
+| Nerf gun | Fisheye camera |
+| ![Base](pictures/IMG_20171118_132956.jpg "Base") | ![Trigger](pictures/IMG_20171118_133024.jpg "Trigger") |
+| Base | Servo trigger |
 
 
 ### Programs
