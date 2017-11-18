@@ -54,6 +54,16 @@ make exec PROGRAM=servo
 ```
 
 
+##### Flex sensor
+
+I adapted the pin connections from [raspberrypi-spy](https://www.raspberrypi-spy.co.uk/2013/10/analogue-sensors-on-the-raspberry-pi-using-an-mcp3008/).
+I used a MCP3008 and a 10K resistor as well and it worked fine.
+
+```sh
+make exec PROGRAM=flex_sensor
+```
+
+
 ##### Blink LED
 
 
