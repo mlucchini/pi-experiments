@@ -54,7 +54,7 @@ make exec PROGRAM=servo
 ```
 
 
-##### Flex sensor
+##### Flex sensor
 
 I adapted the pin connections from [raspberrypi-spy](https://www.raspberrypi-spy.co.uk/2013/10/analogue-sensors-on-the-raspberry-pi-using-an-mcp3008/).
 I used a MCP3008 and a 10K resistor as well and it worked fine.
@@ -64,11 +64,48 @@ make exec PROGRAM=flex_sensor
 ```
 
 
+##### Browser driver
+
+I'm running Raspbian headless. So the selenium driver is installed as a pip dependency along virtual display:
+
+```sh
+pip install pyvirtualdisplay selenium
+```
+ 
+Firefox with Aptitude:
+
+```sh
+sudo apt-get install python-pip iceweasel xvfb
+```
+
+And GeckoDriver by hand and we want a version compatible with IceWeasel. Since currently IceWeasel is ~ Firefox v52, you
+don't want to install GeckoDriver v0.19 which requires Firefox v55.
+
+```sh
+wget https://github.com/mozilla/geckodriver/releases/download/v0.16.1/geckodriver-v0.16.1-arm7hf.tar.gz
+tar -zxvf geckodriver-v0.16.1-arm7hf.tar.gz
+sudo mv geckodriver /usr/local/bin
+rm geckodriver-v0.16.1-arm7hf.tar.gz
+```
+
+```sh
+make exec PROGRAM=browser_driver
+```
+
+
 ##### Blink LED
 
 
 ```sh
 make exec PROGRAM=blink
+```
+
+
+##### Vibrate phone buzzer
+
+
+```sh
+make exec PROGRAM=vibrator
 ```
 
 
@@ -138,4 +175,11 @@ Take a picture and check it:
 raspistill -o ~/cam.jpg
 scp -r pi@pi2.local:~/cam.jpg .
 open cam.jpg
+```
+
+
+##### Raspberry Pi volume
+
+```sh
+alsamixer
 ```
