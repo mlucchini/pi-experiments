@@ -101,6 +101,14 @@ make exec PROGRAM=blink
 ```
 
 
+##### Configurable RGB LED
+
+
+```sh
+make exec PROGRAM=rgb_led
+```
+
+
 ##### Vibrate phone buzzer
 
 
