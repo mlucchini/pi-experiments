@@ -3,29 +3,28 @@ import threading
 import time
 
 
-RED = 25
-GREEN = 24
-BLUE = 23
-
 RGB_OFF = [GPIO.LOW, GPIO.LOW, GPIO.LOW]
 
 
 class RgbLed(threading.Thread):
-    def __init__(self):
+    def __init__(self, red=25, green=24, blue=23):
         super(RgbLed, self).__init__()
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BCM)
-        GPIO.setup(RED, GPIO.OUT)
-        GPIO.setup(GREEN, GPIO.OUT)
-        GPIO.setup(BLUE, GPIO.OUT)
+        GPIO.setup(red, GPIO.OUT)
+        GPIO.setup(green, GPIO.OUT)
+        GPIO.setup(blue, GPIO.OUT)
         self.daemon = True
         self.rgb = RGB_OFF
         self.blinking = False
+        self.red = red
+        self.green = green
+        self.blue = blue
 
     def __color_output(self, rgb):
-      GPIO.output(RED, rgb[0])
-      GPIO.output(GREEN, rgb[1])
-      GPIO.output(BLUE, rgb[2])
+      GPIO.output(self.red, rgb[0])
+      GPIO.output(self.green, rgb[1])
+      GPIO.output(self.blue, rgb[2])
     
     def __pause(self):
       time.sleep(1)

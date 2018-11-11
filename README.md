@@ -117,6 +117,16 @@ make exec PROGRAM=vibrator
 ```
 
 
+##### RFID reader
+
+Follow this [pins setup](https://github.com/mxgxw/MFRC522-python#pins).
+
+```sh
+make exec PROGRAM=rfid_writer
+make exec PROGRAM=rfid_reader
+```
+
+
 ### Random
 
 
